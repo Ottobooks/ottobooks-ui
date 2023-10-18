@@ -1,9 +1,9 @@
-const Automations = () => {
+const Profile = () => {
   return (
     <div className="flex flex-col items-center justify-between p-24">
-      Automations Page!
+      Profile Page!
     </div>
   );
 };
 
-export default Automations;
+export default Profile;

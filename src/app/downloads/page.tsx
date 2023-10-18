@@ -1,9 +1,9 @@
-const Automations = () => {
+const Downloads = () => {
   return (
     <div className="flex flex-col items-center justify-between p-24">
-      Automations Page!
+      Downloads Page!
     </div>
   );
 };
 
-export default Automations;
+export default Downloads;
