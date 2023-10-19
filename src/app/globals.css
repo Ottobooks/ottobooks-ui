@@ -2,6 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .otto-button {
+    @apply px-4 py-2 font-medium tracking-wide rounded-md shadow-sm text-white otto-bg-primary hover:otto-bg-primary-dark;
+  }
+
+  .otto-card {
+    @apply shadow-lg bg-white rounded;
+  }
+
+  .otto-link {
+    @apply otto-primary font-bold hover:otto-primary-dark;
+  }
+
+  .otto-primary {
+    color: #b9a31e;
+  }
+
+  .otto-primary-light {
+    color: #ccba24;
+  }
+
+  .otto-primary-dark {
+    color: #9a7d11;
+  }
+
+  .otto-bg-primary {
+    background-color: #b9a31e;
+  }
+
+  .otto-bg-primary-light {
+    background-color: #ccba24;
+  }
+
+  .otto-bg-primary-dark {
+    background-color: #9a7d11;
+  }
+
+  .otto-label {
+    @apply block text-sm font-medium leading-6 text-gray-900;
+  }
+
+  .otto-input {
+    @apply block w-full rounded-md border-0 py-2 px-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6;
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

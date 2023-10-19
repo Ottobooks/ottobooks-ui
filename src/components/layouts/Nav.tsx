@@ -4,7 +4,7 @@ export default function Nav() {
   return (
     <div className="flex flex-col bg-stone-700 text-gray-300 px-6 pb-6">
       <div className="h-16 flex items-center">
-        <Link href="/" className="text-amber-500">
+        <Link href="/" className="otto-link">
           OTTOBOOKS
         </Link>
       </div>
