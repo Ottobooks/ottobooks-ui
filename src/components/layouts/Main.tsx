@@ -1,11 +1,31 @@
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { destroyAuth } from "@/redux/slices/authSlice";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Main(props: any) {
   const token = useAppSelector((state: any) => state.token);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (!token) {
+      setLoggedIn(false);
+    } else {
+      setLoggedIn(true);
+    }
+  }, [token]);
+
+  const onLogoutHandler = () => {
+    dispatch(destroyAuth());
+    router.push("/login");
+  };
+
   return (
     <div className="p-6 flex-1 flex flex-col">
-      {token ? (
+      {isLoggedIn ? (
         <div className="flex justify-end pb-6 gap-3 text-stone-800 items-center">
           <div>
             <input
@@ -13,7 +33,7 @@ export default function Main(props: any) {
               name="search"
               id="search"
               placeholder="Search"
-              className="otto-button"
+              className="otto-input"
             />
           </div>
           <div className="hover:cursor-pointer">
@@ -48,8 +68,24 @@ export default function Main(props: any) {
               </svg>
             </Link>
           </div>
+          <div className="hover:cursor-pointer" onClick={onLogoutHandler}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12 2.25a.75.75 0 01.75.75v9a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM6.166 5.106a.75.75 0 010 1.06 8.25 8.25 0 1011.668 0 .75.75 0 111.06-1.06c3.808 3.807 3.808 9.98 0 13.788-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788a.75.75 0 011.06 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
         </div>
-      ) : null}
+      ) : (
+        <></>
+      )}
       <main className="flex-1 flex justify-center items-center">
         {props.children}
       </main>

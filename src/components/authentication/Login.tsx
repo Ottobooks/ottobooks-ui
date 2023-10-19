@@ -49,7 +49,7 @@ const Login = () => {
       </div>
       <div className="sm:col-span-3">
         <label htmlFor="username" className="otto-label">
-          Email or Username
+          Email
         </label>
         <div className="mt-2">
           <input
