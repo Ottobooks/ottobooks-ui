@@ -1,16 +1,19 @@
+import { Auth } from "@/constants/script.constant";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialState: Auth = {
   token:
     typeof window !== "undefined" &&
     localStorage.getItem("token") &&
     localStorage.getItem("token") != ""
       ? localStorage.getItem("token")
       : null,
-  firstname: typeof window !== "undefined" && localStorage.getItem("firstname"),
-  lastname: typeof window !== "undefined" && localStorage.getItem("lastname"),
-  email: typeof window !== "undefined" && localStorage.getItem("email"),
-  userId: typeof window !== "undefined" && localStorage.getItem("userId"),
+  firstname:
+    typeof window !== "undefined" ? localStorage.getItem("firstname") : null,
+  lastname:
+    typeof window !== "undefined" ? localStorage.getItem("lastname") : null,
+  email: typeof window !== "undefined" ? localStorage.getItem("email") : null,
+  userId: typeof window !== "undefined" ? localStorage.getItem("userId") : null,
 };
 
 const authSlice = createSlice({

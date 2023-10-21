@@ -37,49 +37,51 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col p-6 gap-6 w-96 otto-card">
-      <div className="flex justify-between">
-        <span className="font-bold">Sign In</span>
-        <div className="flex gap-2">
-          <Link href="/signup" className="otto-link">
-            Create Account
-          </Link>
-          <span>instead?</span>
+    <div className="flex flex-1 justify-center items-center">
+      <div className="flex flex-col p-6 gap-6 w-96 otto-card">
+        <div className="flex justify-between">
+          <span className="font-bold">Sign In</span>
+          <div className="flex gap-2">
+            <Link href="/signup" className="otto-link">
+              Create Account
+            </Link>
+            <span>instead?</span>
+          </div>
         </div>
-      </div>
-      <div className="sm:col-span-3">
-        <label htmlFor="username" className="otto-label">
-          Email
-        </label>
-        <div className="mt-2">
-          <input
-            type="text"
-            name="username"
-            id="username"
-            className="otto-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        <div className="sm:col-span-3">
+          <label htmlFor="username" className="otto-label">
+            Email
+          </label>
+          <div className="mt-2">
+            <input
+              type="text"
+              name="username"
+              id="username"
+              className="otto-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
         </div>
-      </div>
-      <div className="sm:col-span-3">
-        <label htmlFor="password" className="otto-label">
-          Password
-        </label>
-        <div className="mt-2">
-          <input
-            type="password"
-            name="password"
-            id="password"
-            className="otto-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+        <div className="sm:col-span-3">
+          <label htmlFor="password" className="otto-label">
+            Password
+          </label>
+          <div className="mt-2">
+            <input
+              type="password"
+              name="password"
+              id="password"
+              className="otto-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
         </div>
+        <button className="otto-button" onClick={onLoginHandler}>
+          Sign In
+        </button>
       </div>
-      <button className="otto-button" onClick={onLoginHandler}>
-        Sign In
-      </button>
     </div>
   );
 };

@@ -1,14 +1,22 @@
 "use client";
 import Nav from "./Nav";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Main from "./Main";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { OttoState } from "@/constants/script.constant";
+import { setBreadcrumb } from "@/redux/slices/breadcrumbSlice";
 
 const Layout = (props: any) => {
-  const token = useAppSelector((state: any) => state.token);
+  const token = useAppSelector((state: OttoState) => state.auth.token);
   const [isLoggedIn, setLoggedIn] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setBreadcrumb(pathname));
+  }, [pathname]);
 
   useEffect(() => {
     if (!token) {

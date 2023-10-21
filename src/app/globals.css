@@ -8,10 +8,14 @@
   }
 
   .otto-card {
-    @apply shadow-lg bg-white rounded;
+    @apply shadow-lg bg-white rounded-lg;
   }
 
   .otto-link {
+    @apply otto-primary font-bold hover:otto-primary-dark;
+  }
+
+  .otto-internal-link {
     @apply otto-primary font-bold hover:otto-primary-dark;
   }
 
@@ -45,6 +49,10 @@
 
   .otto-input {
     @apply block w-full rounded-md border-0 py-2 px-2 text-gray-900 bg-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6;
+  }
+
+  .otto-breadcrumb {
+    @apply p-4 text-stone-800 flex gap-4 font-bold;
   }
 }
 

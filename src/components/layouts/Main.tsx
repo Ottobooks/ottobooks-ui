@@ -1,14 +1,19 @@
+import { BreadcrumbPath, OttoState } from "@/constants/script.constant";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { destroyAuth } from "@/redux/slices/authSlice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 export default function Main(props: any) {
-  const token = useAppSelector((state: any) => state.token);
+  const token = useAppSelector((state: OttoState) => state.auth.token);
+  const breadcrumbPaths = useAppSelector(
+    (state: OttoState) => state.breadcrumb.paths
+  );
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [paths, setPaths] = useState<BreadcrumbPath[]>([]);
 
   useEffect(() => {
     if (!token) {
@@ -17,6 +22,10 @@ export default function Main(props: any) {
       setLoggedIn(true);
     }
   }, [token]);
+
+  useEffect(() => {
+    setPaths(breadcrumbPaths);
+  }, [breadcrumbPaths]);
 
   const onLogoutHandler = () => {
     dispatch(destroyAuth());
@@ -86,7 +95,48 @@ export default function Main(props: any) {
       ) : (
         <></>
       )}
-      <main className="flex-1 flex justify-center items-center">
+      <main className="flex-1 flex flex-col">
+        {paths.length ? (
+          <div className="otto-breadcrumb">
+            <Link href={"/"}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+                <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
+              </svg>
+            </Link>
+            {paths.map((path, idx) => {
+              return (
+                <Fragment key={idx}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <Link
+                    href={path.url}
+                    className={`${
+                      paths.length - 1 === idx ? "otto-primary-dark" : null
+                    }`}
+                  >
+                    {path.pathname}
+                  </Link>
+                </Fragment>
+              );
+            })}
+          </div>
+        ) : null}
         {props.children}
       </main>
     </div>

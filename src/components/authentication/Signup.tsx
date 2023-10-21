@@ -37,79 +37,81 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex flex-col p-6 gap-6 w-96 otto-card">
-      <div className="flex justify-between">
-        <span className="font-bold">Create Account</span>
-        <div className="flex gap-2">
-          <Link href="/login" className="otto-link">
-            Sign in
-          </Link>
-          <span>instead?</span>
+    <div className="flex flex-1 justify-center items-center">
+      <div className="flex flex-col p-6 gap-6 w-96 otto-card">
+        <div className="flex justify-between">
+          <span className="font-bold">Create Account</span>
+          <div className="flex gap-2">
+            <Link href="/login" className="otto-link">
+              Sign in
+            </Link>
+            <span>instead?</span>
+          </div>
         </div>
-      </div>
-      <div className="sm:col-span-3">
-        <label htmlFor="firstname" className="otto-label">
-          First Name
-        </label>
-        <div className="mt-2">
-          <input
-            type="text"
-            name="firstname"
-            id="firstname"
-            className="otto-input"
-            value={firstname}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
+        <div className="sm:col-span-3">
+          <label htmlFor="firstname" className="otto-label">
+            First Name
+          </label>
+          <div className="mt-2">
+            <input
+              type="text"
+              name="firstname"
+              id="firstname"
+              className="otto-input"
+              value={firstname}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </div>
         </div>
-      </div>
-      <div className="sm:col-span-3">
-        <label htmlFor="lastname" className="otto-label">
-          Last Name
-        </label>
-        <div className="mt-2">
-          <input
-            type="text"
-            name="lastname"
-            id="lastname"
-            className="otto-input"
-            value={lastname}
-            onChange={(e) => setLastName(e.target.value)}
-          />
+        <div className="sm:col-span-3">
+          <label htmlFor="lastname" className="otto-label">
+            Last Name
+          </label>
+          <div className="mt-2">
+            <input
+              type="text"
+              name="lastname"
+              id="lastname"
+              className="otto-input"
+              value={lastname}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </div>
         </div>
-      </div>
-      <div className="sm:col-span-3">
-        <label htmlFor="username" className="otto-label">
-          Email
-        </label>
-        <div className="mt-2">
-          <input
-            type="text"
-            name="username"
-            id="username"
-            className="otto-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        <div className="sm:col-span-3">
+          <label htmlFor="username" className="otto-label">
+            Email
+          </label>
+          <div className="mt-2">
+            <input
+              type="text"
+              name="username"
+              id="username"
+              className="otto-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
         </div>
-      </div>
-      <div className="sm:col-span-3">
-        <label htmlFor="password" className="otto-label">
-          Password
-        </label>
-        <div className="mt-2">
-          <input
-            type="password"
-            name="password"
-            id="password"
-            className="otto-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+        <div className="sm:col-span-3">
+          <label htmlFor="password" className="otto-label">
+            Password
+          </label>
+          <div className="mt-2">
+            <input
+              type="password"
+              name="password"
+              id="password"
+              className="otto-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
         </div>
+        <button className="otto-button" onClick={onCreateHandler}>
+          Create New Account
+        </button>
       </div>
-      <button className="otto-button" onClick={onCreateHandler}>
-        Create New Account
-      </button>
     </div>
   );
 };
