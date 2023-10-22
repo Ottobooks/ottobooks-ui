@@ -4,7 +4,15 @@
 
 @layer components {
   .otto-button {
-    @apply px-4 py-2 font-medium tracking-wide rounded-md shadow-sm text-white otto-bg-primary hover:otto-bg-primary-dark;
+    @apply px-4 py-2 font-medium tracking-wide rounded-md shadow-sm;
+  }
+
+  .otto-button-primary {
+    @apply text-white otto-bg-primary hover:otto-bg-primary-dark;
+  }
+
+  .otto-button-original {
+    @apply border border-gray-400 text-black hover:bg-gray-100;
   }
 
   .otto-card {

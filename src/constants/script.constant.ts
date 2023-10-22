@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+
 export const enum UploadType {
   PASTE_SCRIPT = 1,
   UPLOAD_SCRIPT,
@@ -37,4 +39,17 @@ export interface Auth {
 export interface OttoState {
   auth: Auth;
   breadcrumb: Breadcrumb;
+}
+
+export enum ModalType {
+  SUCCESS = 1,
+  WARNING,
+  FAILURE,
+}
+
+export interface ModalProps {
+  type: ModalType;
+  title: string;
+  content: string;
+  children?: ReactElement;
 }

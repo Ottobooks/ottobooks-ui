@@ -78,7 +78,10 @@ const Login = () => {
             />
           </div>
         </div>
-        <button className="otto-button" onClick={onLoginHandler}>
+        <button
+          className="otto-button otto-button-primary"
+          onClick={onLoginHandler}
+        >
           Sign In
         </button>
       </div>

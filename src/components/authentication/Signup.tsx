@@ -108,7 +108,10 @@ const Signup = () => {
             />
           </div>
         </div>
-        <button className="otto-button" onClick={onCreateHandler}>
+        <button
+          className="otto-button otto-button-primary"
+          onClick={onCreateHandler}
+        >
           Create New Account
         </button>
       </div>
