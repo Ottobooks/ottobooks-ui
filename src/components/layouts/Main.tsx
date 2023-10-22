@@ -35,7 +35,7 @@ export default function Main(props: any) {
   return (
     <div className="p-6 flex-1 flex flex-col">
       {isLoggedIn ? (
-        <div className="flex justify-end pb-6 gap-3 text-stone-800 items-center">
+        <div className="flex justify-end pb-6 gap-5 text-stone-800 items-center">
           <div>
             <input
               type="text"

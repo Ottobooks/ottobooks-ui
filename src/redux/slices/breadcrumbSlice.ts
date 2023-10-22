@@ -18,11 +18,14 @@ const breadcrumbSlice = createSlice({
       const paths: string[] = action.payload.split("/");
       let url = "";
       paths.forEach((path: string) => {
-        if (path !== "" && BreadcrumbType[path]) {
+        if (
+          path !== "" &&
+          BreadcrumbType[path as keyof typeof BreadcrumbType]
+        ) {
           url += `/${path}`;
           const currentPath: BreadcrumbPath = {
             id: path,
-            pathname: BreadcrumbType[path],
+            pathname: BreadcrumbType[path as keyof typeof BreadcrumbType],
             url: url,
           };
           updatedPaths.push(currentPath);

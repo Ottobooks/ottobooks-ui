@@ -3,7 +3,7 @@ export const enum UploadType {
   UPLOAD_SCRIPT,
 }
 
-export const enum BreadcrumbType {
+export enum BreadcrumbType {
   home = "Home",
   create = "Create New Automation",
   script = "Upload Script",
