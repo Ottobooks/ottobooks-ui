@@ -1,7 +1,6 @@
 "use client";
 import { UploadType } from "@/constants/script.constant";
 import { useState } from "react";
-import PasteScript from "./PasteScript";
 import UploadScript from "./UploadScript";
 
 const CreateScript = () => {
