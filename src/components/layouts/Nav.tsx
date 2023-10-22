@@ -11,7 +11,7 @@ export default function Nav() {
     <div className="flex flex-col bg-stone-700 text-gray-300 px-6 pb-6">
       <div className="p-3 h-16 flex items-center">
         <Link href="/" className="otto-link">
-          OTTOBOOKS
+          OTTOBOOKS<sub className="text-white font-medium">ai</sub>
         </Link>
       </div>
 
