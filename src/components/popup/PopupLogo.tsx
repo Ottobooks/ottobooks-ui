@@ -12,7 +12,7 @@ const PopupLogo = (props: { type: ModalType }) => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
-              className="h-6 w-6 text-green-600"
+              className="h-6 w-6 text-green-600 font-bold"
             >
               <path
                 fillRule="evenodd"

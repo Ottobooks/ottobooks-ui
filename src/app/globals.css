@@ -4,11 +4,11 @@
 
 @layer components {
   .otto-button {
-    @apply px-4 py-2 font-medium tracking-wide rounded-md shadow-sm;
+    @apply px-4 py-2 font-medium tracking-wide rounded-md shadow-sm disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .otto-button-primary {
-    @apply text-white otto-bg-primary hover:otto-bg-primary-dark;
+    @apply text-white otto-bg-primary disabled:otto-bg-primary hover:otto-bg-primary-dark;
   }
 
   .otto-button-original {
@@ -51,12 +51,20 @@
     background-color: #9a7d11;
   }
 
+  .otto-border-primary {
+    border-color: #ccba24;
+  }
+
   .otto-label {
     @apply block text-sm font-medium leading-6 text-gray-900;
   }
 
   .otto-input {
     @apply block w-full rounded-md border-0 py-2 px-2 text-gray-900 bg-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6;
+  }
+
+  .otto-checkbox {
+    @apply otto-primary otto-border-primary w-5 h-5 hover:cursor-pointer checked:otto-bg-primary;
   }
 
   .otto-breadcrumb {

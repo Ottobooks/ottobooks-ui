@@ -1,28 +1,67 @@
 "use client";
 import Popup from "@/components/popup/Popup";
-import { ModalType } from "@/constants/script.constant";
-import { Fragment, useState } from "react";
+import { Automation, ModalType } from "@/constants/script.constant";
+import { addAutomation } from "@/redux/slices/automationsSlice";
+import { useRouter } from "next/navigation";
+import { Fragment, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const UploadScript = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const [uploadedFilename, setUploadedFilename] = useState("");
   const [filename, setFilename] = useState("");
+  const [description, setDescription] = useState("");
+  const [script, setScript] = useState("");
+  const [isValid, setIsValid] = useState(false);
   const [formData, setFormData] = useState<FormData | null>(null);
   const [isTooltip, setIsTooltip] = useState<boolean>(false);
   const [isPopup, setIsPopup] = useState<boolean>(false);
 
-  const onUploadScriptHandler = async (fileList: FileList) => {
-    setFilename(fileList[0].name);
+  useEffect(() => {
+    if (
+      filename != "" &&
+      description != "" &&
+      (script != "" || uploadedFilename != "")
+    ) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  }, [filename, description, script, uploadedFilename]);
+
+  const onUploadScriptHandler = (fileList: FileList) => {
+    setUploadedFilename(fileList[0].name);
     const data = new FormData();
     data.append("script", fileList[0]);
     setFormData(data);
   };
 
   const onUploadHandler = async () => {
+    // if (!formData) return;
+    // const response = await fetch("/upload/file", {
+    //   method: "POST",
+    //   body: formData,
+    // });
+    const automation: Automation = {
+      id: Math.random().toString(),
+      filename,
+      description,
+      lastRan: Date.now(),
+      dataSource: null,
+    };
+    dispatch(addAutomation(automation));
     setIsPopup(true);
-    if (!formData) return;
-    const response = await fetch("/upload/file", {
-      method: "POST",
-      body: formData,
-    });
+  };
+
+  const onAddProcessDocHandler = () => {
+    setIsPopup(false);
+    router.push("/create/document");
+  };
+
+  const onDoneHandler = () => {
+    setIsPopup(false);
+    router.push("/automations");
   };
 
   return (
@@ -38,6 +77,8 @@ const UploadScript = () => {
               name="filename"
               id="filename"
               className="otto-input"
+              value={filename}
+              onChange={(e) => setFilename(e.target.value)}
             />
           </div>
         </div>
@@ -50,6 +91,8 @@ const UploadScript = () => {
               name="description"
               id="description"
               className="otto-input"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </div>
         </div>
@@ -67,11 +110,11 @@ const UploadScript = () => {
             >
               <path
                 fillRule="evenodd"
-                d="M11.47 2.47a.75.75 0 011.06 0l4.5 4.5a.75.75 0 01-1.06 1.06l-3.22-3.22V16.5a.75.75 0 01-1.5 0V4.81L8.03 8.03a.75.75 0 01-1.06-1.06l4.5-4.5zM3 15.75a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z"
+                d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z"
                 clipRule="evenodd"
               />
             </svg>
-            <span>{filename}</span>
+            <span className="otto-primary">{uploadedFilename}</span>
           </label>
           <input
             type="file"
@@ -89,6 +132,8 @@ const UploadScript = () => {
           <textarea
             className="otto-input flex-1"
             placeholder="Paste your script here"
+            value={script}
+            onChange={(e) => setScript(e.target.value)}
           ></textarea>
         </div>
       </div>
@@ -96,26 +141,27 @@ const UploadScript = () => {
         <button
           className="otto-button otto-button-primary"
           onClick={onUploadHandler}
+          disabled={isValid ? false : true}
         >
           Save As
         </button>
       </div>
       {isPopup ? (
-        <Popup
-          type={ModalType.SUCCESS}
-          title={"Fixed Asset Schedule Saved"}
-          content=""
-        >
+        <Popup type={ModalType.SUCCESS} title={`${filename} saved`} content="">
           <div className="p-4 flex justify-center gap-2">
             <button
               type="button"
               className="otto-button otto-button-original"
-              onClick={() => setIsPopup(false)}
+              onClick={onDoneHandler}
             >
               Done
             </button>
             <div className=" flex">
-              <button type="button" className="otto-button otto-button-primary">
+              <button
+                type="button"
+                className="otto-button otto-button-primary"
+                onClick={onAddProcessDocHandler}
+              >
                 Add Process Doc
               </button>
               <div

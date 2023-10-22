@@ -39,6 +39,7 @@ export interface Auth {
 export interface OttoState {
   auth: Auth;
   breadcrumb: Breadcrumb;
+  automations: Automations;
 }
 
 export enum ModalType {
@@ -52,4 +53,21 @@ export interface ModalProps {
   title: string;
   content: string;
   children?: ReactElement;
+  onClose?: () => void;
+}
+
+export interface DataSourceProps {
+  automation: Automation;
+}
+
+export interface Automations {
+  automationsList: Automation[];
+}
+
+export interface Automation {
+  id: string;
+  filename: string;
+  description: string;
+  lastRan: number;
+  dataSource: string | null;
 }
