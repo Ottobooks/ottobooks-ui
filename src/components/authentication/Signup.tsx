@@ -1,4 +1,5 @@
 "use client";
+import { baseHeaders, baseUrl } from "@/constants/app.constant";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,16 +20,11 @@ const Signup = () => {
       password,
     };
 
-    const response: Response = await fetch(
-      "https://ottobooks-api.onrender.com/signup",
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json;charset=UTF-8",
-        },
-        body: JSON.stringify(request),
-      }
-    );
+    const response: Response = await fetch(`${baseUrl}/signup`, {
+      method: "POST",
+      headers: baseHeaders,
+      body: JSON.stringify(request),
+    });
 
     const { data, status, errors } = await response.json();
     if (response.ok) {

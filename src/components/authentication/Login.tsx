@@ -1,4 +1,5 @@
 "use client";
+import { baseHeaders, baseUrl } from "@/constants/app.constant";
 import { useAppDispatch } from "@/redux/hooks";
 import { setAuth } from "@/redux/slices/authSlice";
 import Link from "next/link";
@@ -18,16 +19,11 @@ const Login = () => {
       password,
     };
 
-    const response: Response = await fetch(
-      "https://ottobooks-api.onrender.com/signin",
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json;charset=UTF-8",
-        },
-        body: JSON.stringify(request),
-      }
-    );
+    const response: Response = await fetch(`${baseUrl}/signin`, {
+      method: "POST",
+      headers: baseHeaders,
+      body: JSON.stringify(request),
+    });
 
     const data = await response.json();
     if (response.ok) {

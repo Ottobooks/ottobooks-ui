@@ -68,8 +68,8 @@ const UploadScript = () => {
     <Fragment>
       <div className="flex flex-col flex-1 justify-center gap-3 py-8 px-28">
         <div className="flex items-center gap-5">
-          <label htmlFor="filename" className="otto-label w-24">
-            File Name
+          <label htmlFor="filename" className="otto-label w-32">
+            Automation Name
           </label>
           <div className="flex-1">
             <input
@@ -83,7 +83,7 @@ const UploadScript = () => {
           </div>
         </div>
         <div className="flex items-center gap-5">
-          <label htmlFor="description" className="otto-label w-24">
+          <label htmlFor="description" className="otto-label w-32">
             Description
           </label>
           <div className="flex-1">
@@ -97,7 +97,7 @@ const UploadScript = () => {
           </div>
         </div>
         <div className="flex items-center gap-5">
-          <span className="otto-label w-24">Upload File</span>
+          <span className="otto-label w-32">Upload File</span>
           <label
             htmlFor="uploadScript"
             className="flex-1 cursor-pointer flex gap-3 items-center"

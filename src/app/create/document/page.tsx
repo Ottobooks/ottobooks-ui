@@ -1,5 +1,7 @@
+import CreateProcessDocument from "@/components/createAutomation/processDocument/CreateProcessDocument";
+
 const CreateDocumentPage = () => {
-  return <div>Create Document Page</div>;
+  return <CreateProcessDocument></CreateProcessDocument>;
 };
 
 export default CreateDocumentPage;

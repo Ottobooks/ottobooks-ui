@@ -16,6 +16,8 @@ export enum BreadcrumbType {
   community = "Ottobooks Community",
   settings = "Settings",
   profile = "Profile",
+  addDataSource = "Add Data Source",
+  setupIntegration = "Set Up Integration",
 }
 
 export interface Breadcrumb {
@@ -40,6 +42,7 @@ export interface OttoState {
   auth: Auth;
   breadcrumb: Breadcrumb;
   automations: Automations;
+  integration: { type: string | null };
 }
 
 export enum ModalType {
@@ -57,7 +60,7 @@ export interface ModalProps {
 }
 
 export interface DataSourceProps {
-  automation: Automation;
+  automation?: Automation;
 }
 
 export interface Automations {

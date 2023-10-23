@@ -1,9 +1,7 @@
-const Integrations = () => {
-  return (
-    <div className="flex flex-col items-center justify-between p-24">
-      Integrations Page!
-    </div>
-  );
+import Integrations from "@/components/integrations/Integrations";
+
+const IntegrationsPage = () => {
+  return <Integrations></Integrations>;
 };
 
-export default Integrations;
+export default IntegrationsPage;

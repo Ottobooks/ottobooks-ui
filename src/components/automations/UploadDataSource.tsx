@@ -5,21 +5,27 @@ import { useState } from "react";
 import Popup from "../popup/Popup";
 import { useDispatch } from "react-redux";
 import { updateAutomation } from "@/redux/slices/automationsSlice";
+import { useRouter } from "next/navigation";
 
 const UploadDataSource = (props: DataSourceProps) => {
+  const router = useRouter();
   const [filename, setFilename] = useState("");
   const [formData, setFormData] = useState<FormData | null>(null);
   const [isPopup, setIsPopup] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   const onUploadHandler = (fileList: FileList) => {
-    setFilename(fileList[0].name);
+    let filenames = Array.from(fileList)
+      .map((file) => file.name)
+      .join(", ");
+    setFilename(filenames);
     const data = new FormData();
     data.append("script", fileList[0]);
     setFormData(data);
   };
 
   const onRunHandler = () => {
+    if (!props.automation) return;
     const updatedAutomation = { ...props.automation };
     updatedAutomation.dataSource = filename;
     dispatch(updateAutomation(updatedAutomation));
@@ -45,7 +51,7 @@ const UploadDataSource = (props: DataSourceProps) => {
             />
           </svg>
         </label>
-        <span>Upload File</span>
+        <span>Upload Files</span>
         <span className="otto-primary">{filename}</span>
         <input
           type="file"
@@ -55,10 +61,15 @@ const UploadDataSource = (props: DataSourceProps) => {
           onChange={(e) =>
             e.currentTarget.files && onUploadHandler(e.currentTarget.files)
           }
+          multiple
         ></input>
       </div>
       <div className="flex items-center gap-5">
-        <label htmlFor="setUpIntegration" className="cursor-pointer">
+        <label
+          htmlFor="setUpIntegration"
+          className="cursor-pointer"
+          onClick={() => router.push("/integrations")}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
