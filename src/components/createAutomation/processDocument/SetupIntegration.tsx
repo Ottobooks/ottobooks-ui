@@ -10,7 +10,7 @@ const SetupIntegration = () => {
     (state: OttoState) => state.integration.type
   );
   const [isSetup, setIsSetup] = useState(true);
-  const filename = "Shopify_Order_Resport.csv";
+  const filename = `${integrationType}_order_report.csv`;
   const onContinueHandler = () => {
     setIsSetup(false);
   };

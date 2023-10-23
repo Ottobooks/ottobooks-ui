@@ -35,7 +35,7 @@ const Integrations = () => {
             className="otto-button otto-button-original border-stone-700"
             onClick={() => onReconcilationHandler("shopify")}
           >
-            Reconcilation
+            Integrate
           </button>
         </div>
         <div className="flex flex-col p-2 border-2 border-stone-700 bg-white rounded-lg h-44 w-72">
@@ -49,9 +49,9 @@ const Integrations = () => {
           </div>
           <button
             className="otto-button otto-button-original border-stone-700"
-            onClick={() => onReconcilationHandler("shopify")}
+            onClick={() => onReconcilationHandler("stripe")}
           >
-            Reconcilation
+            Integrate
           </button>
         </div>
       </div>
@@ -67,9 +67,9 @@ const Integrations = () => {
           </div>
           <button
             className="otto-button otto-button-original border-stone-700"
-            onClick={() => onReconcilationHandler("shopify")}
+            onClick={() => onReconcilationHandler("affirm")}
           >
-            Reconcilation
+            Integrate
           </button>
         </div>
         <div className="flex flex-col p-2 border-2 border-stone-700 bg-white rounded-lg h-44 w-72">
@@ -83,9 +83,9 @@ const Integrations = () => {
           </div>
           <button
             className="otto-button otto-button-original border-stone-700"
-            onClick={() => onReconcilationHandler("shopify")}
+            onClick={() => onReconcilationHandler("paypal")}
           >
-            Reconcilation
+            Integrate
           </button>
         </div>
       </div>
