@@ -1,9 +1,7 @@
-const Community = () => {
-  return (
-    <div className="flex flex-col items-center justify-between p-24">
-      Community Page!
-    </div>
-  );
+import Community from "@/components/community/community";
+
+const CommunityPage = () => {
+  return <Community></Community>;
 };
 
-export default Community;
+export default CommunityPage;
