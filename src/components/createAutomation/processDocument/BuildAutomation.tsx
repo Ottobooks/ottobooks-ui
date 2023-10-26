@@ -85,7 +85,7 @@ const BuildAutomation = () => {
   const [userText, setUserText] = useState("");
   const [currentNumber, setCurrentNumber] = useState(1);
   const [isPopup, setIsPopup] = useState<boolean>(false);
-  const filename = `shopify_order_report.csv`;
+  const filename = `Processed_Shopify_Data.xlsx`;
 
   useEffect(() => {
     setScripts((t: any) => [...t, tempScripts[0], tempScripts[1]]);
@@ -184,9 +184,9 @@ const BuildAutomation = () => {
         >
           <div className="pb-4 flex justify-center">
             <a
-              href="#javascript"
+              href="/Processed_Shopify_Data.xlsx"
               className="otto-link"
-              onClick={(e) => e.preventDefault()}
+              download
             >
               {filename}
             </a>
