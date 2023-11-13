@@ -1,14 +1,32 @@
 "use client";
 import { Automation, OttoState } from "@/constants/script.constant";
 import { useAppSelector } from "@/redux/hooks";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import UploadDataSource from "./UploadDataSource";
+import { baseUrl } from "@/constants/app.constant";
 
 const Automations = () => {
-  const automationList = useAppSelector(
-    (state: OttoState) => state.automations.automationsList
-  );
+  const token = useAppSelector((state: OttoState) => state.auth.token);
+  const [automations, setAutomations] = useState([]);
   const [runAutomation, setRunAutomation] = useState<Automation | null>(null);
+
+  useEffect(() => {
+    getAutomations();
+  }, []);
+
+  const getAutomations = async () => {
+    const requestHeaders: HeadersInit = new Headers();
+    requestHeaders.set("Content-Type", "application/json");
+    requestHeaders.set("x-api-token", token ?? "");
+    const response: Response = await fetch(`${baseUrl}/automation`, {
+      method: "GET",
+      headers: requestHeaders,
+    });
+
+    const data = await response.json();
+
+    setAutomations(data);
+  };
 
   const onRunHandler = (automation: Automation) => {
     setRunAutomation(automation);
@@ -16,32 +34,34 @@ const Automations = () => {
 
   return (
     <div className="flex flex-col min-w-full">
-      {automationList.length ? (
+      {automations.length ? (
         <Fragment>
           <table className="table-auto">
             <thead>
               <tr className="border-t border-t-gray-300">
                 <th className="py-4 pr-4 text-left">Name</th>
-                <th className="py-4 pr-4 text-left">Last Ran</th>
-                <th className="py-4 pr-4 text-left">Data Source</th>
+                <th className="py-4 pr-4 text-left">Process</th>
+                <th className="py-4 pr-4 text-left">Script</th>
                 <th className="py-4 text-right">Run</th>
               </tr>
             </thead>
             <tbody>
-              {automationList.map((automation) => {
+              {automations.map((automation: any) => {
                 return (
                   <tr
                     key={automation.id}
                     className="border-t border-t-gray-300"
                   >
+                    <td className="py-4 pr-4 text-left">{automation.name}</td>
                     <td className="py-4 pr-4 text-left">
-                      {automation.filename}
+                      {automation.process === "None"
+                        ? "Unknown"
+                        : automation.process}
                     </td>
                     <td className="py-4 pr-4 text-left">
-                      {new Date(automation.lastRan).toLocaleString()}
-                    </td>
-                    <td className="py-4 pr-4 text-left">
-                      {automation.dataSource ?? "Unknown"}
+                      {automation.script === "None"
+                        ? "Unknown"
+                        : automation.script}
                     </td>
                     <td className="py-4 text-right">
                       <input

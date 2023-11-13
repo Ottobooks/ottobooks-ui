@@ -1,6 +1,8 @@
 "use client";
 import Popup from "@/components/popup/Popup";
-import { Automation, ModalType } from "@/constants/script.constant";
+import { baseHeaders, baseUrl } from "@/constants/app.constant";
+import { Automation, ModalType, OttoState } from "@/constants/script.constant";
+import { useAppSelector } from "@/redux/hooks";
 import { addAutomation } from "@/redux/slices/automationsSlice";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
@@ -9,6 +11,7 @@ import { useDispatch } from "react-redux";
 const UploadScript = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const token = useAppSelector((state: OttoState) => state.auth.token);
   const [uploadedFilename, setUploadedFilename] = useState("");
   const [filename, setFilename] = useState("");
   const [description, setDescription] = useState("");
@@ -33,25 +36,81 @@ const UploadScript = () => {
   const onUploadScriptHandler = (fileList: FileList) => {
     setUploadedFilename(fileList[0].name);
     const data = new FormData();
-    data.append("script", fileList[0]);
+    data.append("script_file", fileList[0]);
     setFormData(data);
   };
 
   const onUploadHandler = async () => {
-    // if (!formData) return;
-    // const response = await fetch("/upload/file", {
-    //   method: "POST",
-    //   body: formData,
-    // });
-    const automation: Automation = {
-      id: Math.random().toString(),
-      filename,
+    const createData = await createAutomation();
+
+    if (formData) {
+      const scriptUpload = await uploadScript(createData.automation_id);
+      if (scriptUpload) setIsPopup(true);
+    } else {
+      const scriptText = await addScript(createData.automation_id);
+      if (scriptText) setIsPopup(true);
+    }
+  };
+
+  const createAutomation = async () => {
+    const request = {
+      name: filename,
       description,
-      lastRan: Date.now(),
-      dataSource: null,
     };
-    dispatch(addAutomation(automation));
-    setIsPopup(true);
+    const requestHeaders: HeadersInit = new Headers();
+    requestHeaders.set("Content-Type", "application/json");
+    requestHeaders.set("x-api-token", token ?? "");
+    const response: Response = await fetch(`${baseUrl}/automation`, {
+      method: "POST",
+      headers: requestHeaders,
+      body: JSON.stringify(request),
+    });
+
+    const data = await response.json();
+
+    return data;
+  };
+
+  const uploadScript = async (automation_id: string) => {
+    if (!formData) return;
+    const requestHeaders: HeadersInit = new Headers();
+    // requestHeaders.set(
+    //   "Content-Type",
+    //   "multipart/form-data; boundary=<calculated when request is sent>"
+    // );
+    requestHeaders.set("x-api-token", token ?? "");
+    const response = await fetch(
+      `${baseUrl}/automation/script_file?automation_id=${automation_id}`,
+      {
+        method: "POST",
+        headers: requestHeaders,
+        body: formData,
+      }
+    );
+    const data = await response.json();
+
+    return data;
+  };
+
+  const addScript = async (automation_id: string) => {
+    const request = {
+      script_text: script,
+    };
+    const requestHeaders: HeadersInit = new Headers();
+    requestHeaders.set("Content-Type", "application/json");
+    requestHeaders.set("x-api-token", token ?? "");
+    const response: Response = await fetch(
+      `${baseUrl}/automation/script_text?automation_id=${automation_id}`,
+      {
+        method: "POST",
+        headers: requestHeaders,
+        body: JSON.stringify(request),
+      }
+    );
+
+    const data = await response.json();
+
+    return data;
   };
 
   const onAddProcessDocHandler = () => {
