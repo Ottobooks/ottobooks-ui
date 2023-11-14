@@ -32,6 +32,37 @@ const Automations = () => {
     setRunAutomation(automation);
   };
 
+  const downloadFile = async (
+    event: { preventDefault: () => void },
+    filename: string,
+    automation_id: string,
+    isScript: boolean
+  ) => {
+    event.preventDefault();
+    const requestHeaders: HeadersInit = new Headers();
+    requestHeaders.set("Content-Type", "application/json");
+    requestHeaders.set("x-api-token", token ?? "");
+    const response: Response = await fetch(
+      `${baseUrl}/automation/${
+        isScript ? "script_file" : "process_doc"
+      }?automation_id=${automation_id}`,
+      {
+        method: "GET",
+        headers: requestHeaders,
+      }
+    );
+
+    const blob = await response.blob();
+
+    const element = document.createElement("a");
+    element.href = window.URL.createObjectURL(blob);
+    element.download = filename;
+    element.style.display = "none";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
   return (
     <div className="flex flex-col min-w-full">
       {automations.length ? (
@@ -54,14 +85,42 @@ const Automations = () => {
                   >
                     <td className="py-4 pr-4 text-left">{automation.name}</td>
                     <td className="py-4 pr-4 text-left">
-                      {automation.process === "None"
-                        ? "Unknown"
-                        : automation.process}
+                      {automation.process === "None" ? (
+                        "Unknown"
+                      ) : (
+                        <a
+                          href=""
+                          onClick={(e) =>
+                            downloadFile(
+                              e,
+                              automation.name,
+                              automation.id,
+                              false
+                            )
+                          }
+                        >
+                          Download
+                        </a>
+                      )}
                     </td>
                     <td className="py-4 pr-4 text-left">
-                      {automation.script === "None"
-                        ? "Unknown"
-                        : automation.script}
+                      {automation.script === "None" ? (
+                        "Unknown"
+                      ) : (
+                        <a
+                          href=""
+                          onClick={(e) =>
+                            downloadFile(
+                              e,
+                              automation.name,
+                              automation.id,
+                              true
+                            )
+                          }
+                        >
+                          Download
+                        </a>
+                      )}
                     </td>
                     <td className="py-4 text-right">
                       <input

@@ -1,5 +1,7 @@
 "use client";
-import { Automation } from "@/constants/script.constant";
+import { baseUrl } from "@/constants/app.constant";
+import { Automation, OttoState } from "@/constants/script.constant";
+import { useAppSelector } from "@/redux/hooks";
 import { addAutomation } from "@/redux/slices/automationsSlice";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -8,6 +10,7 @@ import { useDispatch } from "react-redux";
 const CreateProcessDocument = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const token = useAppSelector((state: OttoState) => state.auth.token);
   const [uploadedFilename, setUploadedFilename] = useState("");
   const [filename, setFilename] = useState("");
   const [description, setDescription] = useState("");
@@ -30,11 +33,19 @@ const CreateProcessDocument = () => {
   const onUploadScriptHandler = (fileList: FileList) => {
     setUploadedFilename(fileList[0].name);
     const data = new FormData();
-    data.append("script", fileList[0]);
+    data.append("process_doc", fileList[0]);
     setFormData(data);
   };
 
   const onUploadHandler = async () => {
+    const createData = await createAutomation();
+
+    if (formData) {
+      await uploadProcessDoc(createData.automation_id);
+    } else {
+      await addProcesstext(createData.automation_id);
+    }
+
     router.push("/create/document/addDataSource");
     // const automation: Automation = {
     //   id: Math.random().toString(),
@@ -44,6 +55,67 @@ const CreateProcessDocument = () => {
     //   dataSource: null,
     // };
     // dispatch(addAutomation(automation));
+  };
+
+  const createAutomation = async () => {
+    const request = {
+      name: filename,
+      description,
+    };
+    const requestHeaders: HeadersInit = new Headers();
+    requestHeaders.set("Content-Type", "application/json");
+    requestHeaders.set("x-api-token", token ?? "");
+    const response: Response = await fetch(`${baseUrl}/automation`, {
+      method: "POST",
+      headers: requestHeaders,
+      body: JSON.stringify(request),
+    });
+
+    const data = await response.json();
+
+    return data;
+  };
+
+  const uploadProcessDoc = async (automation_id: string) => {
+    if (!formData) return;
+    const requestHeaders: HeadersInit = new Headers();
+    // requestHeaders.set(
+    //   "Content-Type",
+    //   "multipart/form-data; boundary=<calculated when request is sent>"
+    // );
+    requestHeaders.set("x-api-token", token ?? "");
+    const response = await fetch(
+      `${baseUrl}/automation/process_doc?automation_id=${automation_id}`,
+      {
+        method: "POST",
+        headers: requestHeaders,
+        body: formData,
+      }
+    );
+    const data = await response.json();
+
+    return data;
+  };
+
+  const addProcesstext = async (automation_id: string) => {
+    const request = {
+      process_text: script,
+    };
+    const requestHeaders: HeadersInit = new Headers();
+    requestHeaders.set("Content-Type", "application/json");
+    requestHeaders.set("x-api-token", token ?? "");
+    const response: Response = await fetch(
+      `${baseUrl}/automation/process_text?automation_id=${automation_id}`,
+      {
+        method: "POST",
+        headers: requestHeaders,
+        body: JSON.stringify(request),
+      }
+    );
+
+    const data = await response.json();
+
+    return data;
   };
 
   return (
