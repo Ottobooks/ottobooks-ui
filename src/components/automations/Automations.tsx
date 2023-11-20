@@ -90,6 +90,7 @@ const Automations = () => {
                       ) : (
                         <a
                           href=""
+                          className="otto-link"
                           onClick={(e) =>
                             downloadFile(
                               e,
@@ -109,6 +110,7 @@ const Automations = () => {
                       ) : (
                         <a
                           href=""
+                          className="otto-link"
                           onClick={(e) =>
                             downloadFile(
                               e,
