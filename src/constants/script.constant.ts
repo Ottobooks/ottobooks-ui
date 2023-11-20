@@ -73,4 +73,5 @@ export interface Automation {
   description: string;
   lastRan: number;
   dataSource: string | null;
+  name?: string;
 }
