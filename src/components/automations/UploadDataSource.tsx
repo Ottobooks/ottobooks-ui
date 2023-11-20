@@ -1,34 +1,66 @@
 "use client";
 
-import { DataSourceProps, ModalType } from "@/constants/script.constant";
+import {
+  DataSourceProps,
+  ModalType,
+  OttoState,
+} from "@/constants/script.constant";
 import { useState } from "react";
 import Popup from "../popup/Popup";
 import { useDispatch } from "react-redux";
 import { updateAutomation } from "@/redux/slices/automationsSlice";
 import { useRouter } from "next/navigation";
+import { baseUrl } from "@/constants/app.constant";
+import { useAppSelector } from "@/redux/hooks";
 
 const UploadDataSource = (props: DataSourceProps) => {
   const router = useRouter();
   const [filename, setFilename] = useState("");
+  const [uploadedFilename, setUploadedFilename] = useState<any>(null);
   const [formData, setFormData] = useState<FormData | null>(null);
   const [isPopup, setIsPopup] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const token = useAppSelector((state: OttoState) => state.auth.token);
 
-  const onUploadHandler = (fileList: FileList) => {
+  const onUploadHandler = async (fileList: FileList) => {
     let filenames = Array.from(fileList)
       .map((file) => file.name)
       .join(", ");
     setFilename(filenames);
-    const data = new FormData();
-    data.append("script", fileList[0]);
-    setFormData(data);
+    const uploadData = new FormData();
+    uploadData.append("input_file", fileList[0]);
+    setFormData(() => uploadData);
+
+    const requestHeaders: HeadersInit = new Headers();
+    requestHeaders.set("x-api-token", token ?? "");
+    const response = await fetch(`${baseUrl}/automation_run/input`, {
+      method: "POST",
+      headers: requestHeaders,
+      body: uploadData,
+    });
+    const data = await response.json();
+    setUploadedFilename(data);
   };
 
-  const onRunHandler = () => {
+  const onRunHandler = async () => {
     if (!props.automation) return;
-    const updatedAutomation = { ...props.automation };
-    updatedAutomation.dataSource = filename;
-    dispatch(updateAutomation(updatedAutomation));
+    // const updatedAutomation = { ...props.automation };
+    // updatedAutomation.dataSource = filename;
+    // dispatch(updateAutomation(updatedAutomation));
+    const request = {
+      automation_id: props.automation.id,
+      input: uploadedFilename.input_file,
+      description: props.automation.name,
+    };
+    const requestHeaders: HeadersInit = new Headers();
+    requestHeaders.set("Content-Type", "application/json");
+    requestHeaders.set("x-api-token", token ?? "");
+    const response = await fetch(`${baseUrl}/automation_run`, {
+      method: "POST",
+      headers: requestHeaders,
+      body: JSON.stringify(request),
+    });
+    const data = await response.json();
     setIsPopup(true);
   };
 
