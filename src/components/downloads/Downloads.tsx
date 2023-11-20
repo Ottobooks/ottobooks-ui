@@ -88,7 +88,7 @@ const Downloads = () => {
                         downloadSourceFile(
                           e,
                           download.automation_id,
-                          download.input_file,
+                          download.id,
                           false
                         )
                       }
@@ -111,7 +111,7 @@ const Downloads = () => {
                           downloadSourceFile(
                             e,
                             download.result_file,
-                            download.result_file,
+                            download.id,
                             true
                           )
                         }
