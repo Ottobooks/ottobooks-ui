@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "export": "next export",
-    "start": "next start",
-    "lint": "next lint",
+    "dev": "/home/site/wwwroot/node_modules/next/dist/bin/next dev",
+    "build": "/home/site/wwwroot/node_modules/next/dist/bin/next build",
+    "export": "/home/site/wwwroot/node_modules/next/dist/bin/next export",
+    "start": "/home/site/wwwroot/node_modules/next/dist/bin/next start",
+    "lint": "/home/site/wwwroot/node_modules/next/dist/bin/next lint",
     "prettier": "prettier --write"
   },
   "dependencies": {
