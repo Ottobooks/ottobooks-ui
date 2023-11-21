@@ -59,4 +59,4 @@ jobs:
           app-name: 'ottobooks-ui'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_75133B148D3B45AF86480A0D0E200652 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A41F5923A44E4EA39FA47947923136D5 }}
