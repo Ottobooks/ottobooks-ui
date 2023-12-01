@@ -71,6 +71,7 @@ const Automations = () => {
             <thead>
               <tr className="border-t border-t-gray-300">
                 <th className="py-4 pr-4 text-left">Name</th>
+                <th className="py-4 pr-4 text-left">Description</th>
                 <th className="py-4 pr-4 text-left">Process</th>
                 <th className="py-4 pr-4 text-left">Script</th>
                 <th className="py-4 text-right">Run</th>
@@ -84,6 +85,9 @@ const Automations = () => {
                     className="border-t border-t-gray-300"
                   >
                     <td className="py-4 pr-4 text-left">{automation.name}</td>
+                    <td className="py-4 pr-4 text-left">
+                      {automation.description}
+                    </td>
                     <td className="py-4 pr-4 text-left">
                       {automation.process === "None" ? (
                         "Unknown"

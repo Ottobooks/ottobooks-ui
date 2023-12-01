@@ -50,7 +50,7 @@ const UploadDataSource = (props: DataSourceProps) => {
     const request = {
       automation_id: props.automation.id,
       input: uploadedFilename.input_file,
-      description: props.automation.name,
+      description: props.automation.description,
     };
     const requestHeaders: HeadersInit = new Headers();
     requestHeaders.set("Content-Type", "application/json");

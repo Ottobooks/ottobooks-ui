@@ -1,5 +1,6 @@
 "use client";
 import { baseUrl } from "@/constants/app.constant";
+import { Status, TriggerType } from "@/constants/automation.constant";
 import { OttoState } from "@/constants/script.constant";
 import { useAppSelector } from "@/redux/hooks";
 import { useEffect, useState } from "react";
@@ -62,8 +63,8 @@ const Downloads = () => {
         <table className="table-auto">
           <thead>
             <tr className="border-t border-t-gray-300">
-              <th className="py-4 pr-4 text-left">Automation Name</th>
               <th className="py-4 pr-4 text-left">Description</th>
+              {/* <th className="py-4 pr-4 text-left">Description</th> */}
               <th className="py-4 pr-4 text-left">Data Source</th>
               <th className="py-4 pr-4 text-left">Trigger Type</th>
               <th className="py-4 pr-4 text-left">Status</th>
@@ -74,9 +75,9 @@ const Downloads = () => {
             {downloads.map((download: any) => {
               return (
                 <tr key={download.id} className="border-t border-t-gray-300">
-                  <td className="py-4 pr-4 text-left">
+                  {/* <td className="py-4 pr-4 text-left">
                     {download.description}
-                  </td>
+                  </td> */}
                   <td className="py-4 pr-4 text-left">
                     {download.description}
                   </td>
@@ -97,9 +98,11 @@ const Downloads = () => {
                     </a>
                   </td>
                   <td className="py-4 pr-4 text-left">
-                    {download.trigger_type}
+                    {TriggerType[download.trigger_type]}
                   </td>
-                  <td className="py-4 pr-4 text-left">{download.status}</td>
+                  <td className="py-4 pr-4 text-left">
+                    {Status[download.status]}
+                  </td>
                   <td className="py-4 text-right">
                     {download.result_file === "None" ? (
                       "--"
