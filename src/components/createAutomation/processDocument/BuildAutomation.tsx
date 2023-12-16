@@ -3,97 +3,50 @@
 import Popup from "@/components/popup/Popup";
 import { ModalType } from "@/constants/script.constant";
 import { Fragment, useEffect, useState } from "react";
-
-const tempScripts = [
-  { text: "Processing Document...", type: 1 },
-  { text: "hi. otto here. let's automate!", type: 1 },
-  {
-    text: "let's start by breaking your process document up in steps.",
-    type: 1,
-  },
-  {
-    text: "the first step is to calculate gross sales using the price x quantity.",
-    type: 1,
-  },
-  {
-    text: "i see line item price and line item quantity. are these the correct fields to use?",
-    type: 1,
-  },
-];
-const tempScripts2 = [
-  {
-    text: "great. i'll use those and i'll add my own notes in blue to your process doc for clarification.",
-    type: 1,
-  },
-  {
-    text: "i see $305,053 in gross sales in June based on the fulfillment date. does that match what you would expect?",
-    type: 1,
-  },
-];
-const tempScripts3 = [
-  {
-    text: "that's okay. we can continue. i will also create detailed back up of all totals so you can validate the outcomes later.",
-    type: 1,
-  },
-  {
-    text: "i have added the $305,053 of June Gross Sales to a credit to the Journal Entry table as specified in your process document.",
-    type: 1,
-  },
-  {
-    text: "next let's calculate total discounts. i see $18,083 of discounts in June. I have added this as a debit to the Journal Entry table as requested.",
-    type: 1,
-  },
-  {
-    text: "next, let's calculate total cash received.",
-    type: 1,
-  },
-  {
-    text: "total cash received is $299,014. I have added this as a debit to the Journal Entry table as requested.",
-    type: 1,
-  },
-  {
-    text: "lastly, i am summing the debits and credits and checking that they match.",
-    type: 1,
-  },
-  {
-    text: "there is an error. debits and credits do not match. they are off by $12,044.",
-    type: 1,
-  },
-];
-const tempScripts4 = [
-  {
-    text: "yes that's it! sales tax is $12,044. would you like me to add that to the journal entry table and adjust the process doc?",
-    type: 1,
-  },
-];
-const tempScripts5 = [
-  {
-    text: "done. your process doc with my updates (in blue) and your automation is ready. you can see the output here if you want any further changes, or you can find both in My Automations.",
-    type: 1,
-  },
-];
-
-const temps: any = {
-  2: tempScripts2,
-  3: tempScripts3,
-  4: tempScripts4,
-  5: tempScripts5,
-};
+import { socket } from "@/socket";
+import {
+  IMessage,
+  MessageType,
+  UserType,
+} from "@/constants/automation.constant";
 
 const BuildAutomation = () => {
-  const [scripts, setScripts] = useState<any>([]);
-  const [userText, setUserText] = useState("");
-  const [currentNumber, setCurrentNumber] = useState(1);
-  const [isPopup, setIsPopup] = useState<boolean>(false);
-  const filename = `Processed_Shopify_Data.xlsx`;
+  const [isConnected, setIsConnected] = useState(false);
+  const [automationEvents, setAutomationEvents] = useState<IMessage[]>([]);
+  const [inputQuery, setInputQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [uploadedFilename, setUploadedFilename] = useState("");
+  const [formData, setFormData] = useState<FormData | null>(null);
+  const [objectUrl, setObjectUrl] = useState("");
+  const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>("");
 
   useEffect(() => {
-    setScripts((t: any) => [...t, tempScripts[0], tempScripts[1]]);
-    setTimeout(() => setScripts((t: any) => [...t, tempScripts[2]]), 1000);
-    setTimeout(
-      () => setScripts((t: any) => [...t, tempScripts[3], tempScripts[4]]),
-      2000
-    );
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    function onAutomationEvent(value: any) {
+      const message: IMessage = {
+        type: MessageType.Text,
+        userType: UserType.Bot,
+        text: value.data,
+      };
+      setAutomationEvents((previous) => [...previous, message]);
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("message", onAutomationEvent);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("message", onAutomationEvent);
+    };
   }, []);
 
   useEffect(() => {
@@ -101,81 +54,174 @@ const BuildAutomation = () => {
     if (contentCard) {
       contentCard.scrollTop = contentCard.scrollHeight;
     }
-  }, [scripts]);
+  }, [automationEvents]);
 
-  useEffect(() => {
-    const currentScripts: [] = temps[currentNumber];
-    if (currentScripts) {
-      setTimeout(() => setScripts((t: any) => [...t, ...currentScripts]), 2000);
-    }
-    if (currentNumber == 5) {
-      const endButton = {
-        text: "Shopify Revenue Reconcilation",
-        type: 3,
+  const onSendHandler = (event: any) => {
+    event.preventDefault();
+    setIsLoading(true);
+    if (uploadedFilename && uploadedFilename !== "") {
+      const message: IMessage = {
+        type: MessageType.File,
+        userType: UserType.User,
+        text: uploadedFilename,
+        formData,
+        objectUrl,
       };
-      setTimeout(() => setScripts((t: any) => [...t, endButton]), 2100);
+      setAutomationEvents((previous) => [...previous, message]);
+      socket.timeout(5000).emit("upload", { data: formData }, () => {
+        setIsLoading(false);
+      });
+      setUploadedFilename("");
+      setFormData(null);
     }
-  }, [currentNumber]);
 
-  const onSendHandler = () => {
-    setScripts((t: any) => [...t, { text: userText, type: 2 }]);
-    setUserText("");
-    setCurrentNumber((s: number) => s + 1);
+    if (inputQuery && inputQuery !== "") {
+      const message: IMessage = {
+        type: MessageType.Text,
+        userType: UserType.User,
+        text: inputQuery,
+      };
+      setAutomationEvents((previous) => [...previous, message]);
+      socket.timeout(5000).emit("message", { data: inputQuery }, () => {
+        setIsLoading(false);
+      });
+      setInputQuery("");
+    }
   };
 
-  const onReconcilationHandler = () => {
-    setIsPopup(true);
+  const onUploadFileHandler = (fileList: FileList) => {
+    setUploadedFilename(fileList[0].name);
+    const data = new FormData();
+    data.append("process_doc", fileList[0]);
+    setFormData(data);
+    setObjectUrl(URL.createObjectURL(fileList[0]));
+    // const reader = new FileReader();
+    // const url = reader.readAsDataURL(fileList[0]);
+    // if(reader?.onloadend) {
+    //   reader.onloadend((e: any) => {
+    //     setImageSrc(reader.result);
+    //   });
+    // }
   };
-
-  const onPopupCloseHandler = () => setIsPopup(false);
 
   return (
     <div className="flex flex-col px-10 py-8 gap-3">
       <div className="font-bold text-xl">Build Automation</div>
-      <div>
+      <div className=" rounded-lg">
         <div
           id="contentCard"
-          className="p-4 border border-stone-700 rounded w-2/3 bg-white h-96 overflow-auto flex flex-col gap-3"
+          className="p-4 bg-white border border-gray-200 rounded-t-lg h-96 flex flex-col overflow-auto gap-3"
         >
-          {scripts.map((s: any, idx: number) => {
+          {automationEvents.map((s: IMessage, idx: number) => {
             return (
               <Fragment key={idx}>
-                {s.type === 3 ? (
-                  <button
-                    className="otto-button otto-button-original"
-                    onClick={onReconcilationHandler}
-                  >
-                    {s.text}
-                  </button>
-                ) : (
-                  <div
-                    className={`${
-                      s.type == 2 ? "otto-primary text-right" : null
-                    }`}
-                  >
-                    {s.text}
-                  </div>
-                )}
+                <div
+                  className={`flex items-center gap-3 ${
+                    s.userType === UserType.User ? "flex-row-reverse" : ""
+                  }`}
+                >
+                  {s.type === MessageType.File ? (
+                    <span
+                      className={`text-justify max-w-3xl rounded p-2 border ${
+                        s.userType === UserType.User
+                          ? "bg-slate-100 border-slate-200"
+                          : "bg-stone-100 border-stone-200"
+                      }`}
+                    >
+                      <object
+                        data={s.objectUrl}
+                        type="application/pdf"
+                        width="200px"
+                        height="100px"
+                      />
+                      <div className={`flex gap-2 items-center`}>
+                        <span className="w-40 break-all">{s.text}</span>
+                        <a href={s.objectUrl} target="_blank" download={s.text}>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="w-8 h-8"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-.53 14.03a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V8.25a.75.75 0 00-1.5 0v5.69l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </a>
+                      </div>
+                    </span>
+                  ) : (
+                    <span
+                      className={`text-justify max-w-3xl rounded p-2 border ${
+                        s.userType === UserType.User
+                          ? "bg-slate-100 border-slate-200 text-right"
+                          : "bg-stone-100 border-stone-200"
+                      }`}
+                    >
+                      {s.text}
+                    </span>
+                  )}
+                </div>
               </Fragment>
             );
           })}
         </div>
-        <div className="flex w-2/3">
+        <div className="flex bg-gray-200 rounded-b-lg px-3 py-3 border border-slate-100 gap-5 items-center">
           <input
             type="text"
-            className="otto-input border border-stone-700 rounded-none bg-white"
-            value={userText}
-            onChange={(e) => setUserText(e.target.value)}
+            className="otto-input border-none p-3 bg-white shadow-none"
+            placeholder="Type a message"
+            value={inputQuery}
+            onChange={(e) => setInputQuery(e.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                onSendHandler(event);
+              }
+            }}
           ></input>
+          <a href="">
+            <label
+              htmlFor="uploadFile"
+              className="flex-1 cursor-pointer flex gap-3 items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
+                />
+              </svg>
+              <span className="otto-primary">{uploadedFilename}</span>
+            </label>
+            <input
+              type="file"
+              id="uploadFile"
+              name="uploadFile"
+              className="hidden"
+              onChange={(e) =>
+                e.currentTarget.files &&
+                onUploadFileHandler(e.currentTarget.files)
+              }
+            ></input>
+          </a>
           <button
-            className="otto-button otto-button-original border border-stone-700 rounded-none"
+            className="otto-button otto-button-primary shadow"
             onClick={onSendHandler}
           >
-            Submit
+            Send
           </button>
         </div>
       </div>
-      {isPopup ? (
+      {/* {isPopup ? (
         <Popup
           type={ModalType.SUCCESS}
           title={`Your automation is successfully completed!`}
@@ -192,7 +238,7 @@ const BuildAutomation = () => {
             </a>
           </div>
         </Popup>
-      ) : null}
+      ) : null} */}
     </div>
   );
 };
