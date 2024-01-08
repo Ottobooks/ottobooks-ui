@@ -63,6 +63,27 @@ const Automations = () => {
     document.body.removeChild(element);
   };
 
+  const deleteAutomation = async (
+    event: { preventDefault: () => void },
+    automation_id: string
+  ) => {
+    event.preventDefault();
+    const requestHeaders: HeadersInit = new Headers();
+    requestHeaders.set("Content-Type", "application/json");
+    requestHeaders.set("x-api-token", token ?? "");
+    const response: Response = await fetch(
+      `${baseUrl}/automation?automation_id=${automation_id}`,
+      {
+        method: "DELETE",
+        headers: requestHeaders,
+      }
+    );
+
+    const data = await response.json();
+
+    getAutomations();
+  };
+
   return (
     <div className="flex flex-col min-w-full">
       {automations.length ? (
@@ -74,7 +95,8 @@ const Automations = () => {
                 <th className="py-4 pr-4 text-left">Description</th>
                 <th className="py-4 pr-4 text-left">Process</th>
                 <th className="py-4 pr-4 text-left">Script</th>
-                <th className="py-4 text-right">Run</th>
+                <th className="py-4 text-center">Run</th>
+                <th className="py-4 text-right"></th>
               </tr>
             </thead>
             <tbody>
@@ -128,12 +150,25 @@ const Automations = () => {
                         </a>
                       )}
                     </td>
-                    <td className="py-4 text-right">
+                    <td className="py-4 text-center">
                       <input
                         type="checkbox"
                         className="otto-checkbox"
-                        onClick={() => onRunHandler(automation)}
+                        onClick={(e) =>
+                          e.currentTarget.checked
+                            ? onRunHandler(automation)
+                            : setRunAutomation(null)
+                        }
                       ></input>
+                    </td>
+                    <td className="py-4 text-right">
+                      <a
+                        href=""
+                        className="text-red-700 font-bold hover:cursor-pointer hover:text-red-600"
+                        onClick={(e) => deleteAutomation(e, automation.id)}
+                      >
+                        Delete
+                      </a>
                     </td>
                   </tr>
                 );

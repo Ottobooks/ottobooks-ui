@@ -57,6 +57,27 @@ const Downloads = () => {
     document.body.removeChild(element);
   };
 
+  const deleteAutomationRuns = async (
+    event: { preventDefault: () => void },
+    automation_run_id: string
+  ) => {
+    event.preventDefault();
+    const requestHeaders: HeadersInit = new Headers();
+    requestHeaders.set("Content-Type", "application/json");
+    requestHeaders.set("x-api-token", token ?? "");
+    const response: Response = await fetch(
+      `${baseUrl}/automation_run?automation_run_id=${automation_run_id}`,
+      {
+        method: "DELETE",
+        headers: requestHeaders,
+      }
+    );
+
+    const data = await response.json();
+
+    getDownloads();
+  };
+
   return (
     <div className="flex flex-col min-w-full">
       {downloads.length ? (
@@ -68,7 +89,8 @@ const Downloads = () => {
               <th className="py-4 pr-4 text-left">Data Source</th>
               <th className="py-4 pr-4 text-left">Trigger Type</th>
               <th className="py-4 pr-4 text-left">Status</th>
-              <th className="py-4 text-right">Result</th>
+              <th className="py-4 text-left">Result</th>
+              <th className="py-4 text-right"></th>
             </tr>
           </thead>
           <tbody>
@@ -103,7 +125,7 @@ const Downloads = () => {
                   <td className="py-4 pr-4 text-left">
                     {Status[download.status]}
                   </td>
-                  <td className="py-4 text-right">
+                  <td className="py-4 text-left">
                     {download.result_file === "None" ? (
                       "--"
                     ) : (
@@ -122,6 +144,15 @@ const Downloads = () => {
                         Download
                       </a>
                     )}
+                  </td>
+                  <td className="py-4 text-right">
+                    <a
+                      href=""
+                      className="text-red-700 font-bold hover:cursor-pointer hover:text-red-600"
+                      onClick={(e) => deleteAutomationRuns(e, download.id)}
+                    >
+                      Delete
+                    </a>
                   </td>
                 </tr>
               );
